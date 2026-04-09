@@ -26,6 +26,7 @@ class Connector extends Model
             'is_active' => 'boolean',
             'ssl_verify' => 'boolean',
             'timeout_seconds' => 'integer',
+            'secret' => 'encrypted',
         ];
     }
 

@@ -24,6 +24,7 @@ class LinkedAccount extends Model
         'last_synced_at',
         'last_sync_status',
         'metadata_json',
+        'domain',
     ];
 
     protected function casts(): array

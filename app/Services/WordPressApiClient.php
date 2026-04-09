@@ -9,14 +9,15 @@ class WordPressApiClient extends ApiClient
 {
     protected string $wpUsername;
     protected string $wpApplicationPassword;
-
+    protected array $lastError = [];
+    
     public function __construct(Connector $connector)
     {
         if ($connector->type !== 'wordpress') {
             throw new \InvalidArgumentException('Connector must be of type wordpress');
         }
         
-        $meta = $connector->meta_json ?? [];
+        $meta = is_array($connector->meta_json) ? $connector->meta_json : json_decode($connector->meta_json ?? '{}', true);
         $this->wpUsername = $meta['wp_username'] ?? $connector->username;
         $this->wpApplicationPassword = $meta['wp_application_password'] ?? $connector->secret;
         
@@ -35,11 +36,23 @@ class WordPressApiClient extends ApiClient
     {
         try {
             $response = $this->get('wp-json/wp/v2/users/me');
-            return isset($response['status']) && $response['status'] === 200;
+            
+            if (isset($response['status']) && $response['status'] === 200) {
+                return true;
+            }
+            
+            $this->lastError = ['status' => $response['status'] ?? 0, 'message' => 'Unexpected response'];
+            return false;
         } catch (\Exception $e) {
             Log::error('WordPress Connection Test Failed', ['error' => $e->getMessage()]);
+            $this->lastError = ['message' => $e->getMessage()];
             return false;
         }
+    }
+    
+    public function getLastError(): array
+    {
+        return $this->lastError;
     }
 
     protected function get(string $uri, array $options = []): array

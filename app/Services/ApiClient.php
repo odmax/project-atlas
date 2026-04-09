@@ -16,13 +16,18 @@ abstract class ApiClient
     public function __construct(Connector $connector)
     {
         $this->connector = $connector;
+        
+        $baseUrl = rtrim($connector->base_url, '/') . '/';
+        
+        $authHeader = 'cpanel ' . $connector->username . ':' . $connector->secret;
+        
         $this->config = [
-            'base_uri' => rtrim($connector->base_url, '/') . '/',
+            'base_uri' => $baseUrl,
             'timeout' => $connector->timeout_seconds ?? 30,
             'verify' => $connector->ssl_verify ?? true,
-            'auth' => [
-                $connector->username,
-                $connector->secret,
+            'headers' => [
+                'Authorization' => $authHeader,
+                'Accept' => 'application/json',
             ],
         ];
     }

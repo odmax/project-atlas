@@ -8,10 +8,13 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
+use Filament\Pages\Auth\Login;
+use App\Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\VerticalAlignment;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -30,8 +33,23 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => [
+                    50 => '#e6fcff',
+                    100 => '#b3f5ff',
+                    200 => '#80eeff',
+                    300 => '#4de7ff',
+                    400 => '#1ae0ff',
+                    500 => '#20C4E6',
+                    600 => '#1a9eb8',
+                    700 => '#13788a',
+                    800 => '#0c525c',
+                    900 => '#052c2e',
+                    950 => '#021719',
+                ],
             ])
+            ->brandName('Atlas')
+            ->brandLogo(asset('Dashboard-Logo.png'))
+            ->brandLogoHeight('2.5rem')
             ->authGuard('web')
             ->authMiddleware([
                 Authenticate::class,
@@ -39,7 +57,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

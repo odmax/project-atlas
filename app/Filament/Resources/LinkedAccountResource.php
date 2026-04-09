@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LinkedAccountResource\Pages;
 use App\Filament\Resources\LinkedAccountResource\RelationManagers;
+use App\Models\Connector;
 use App\Models\LinkedAccount;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -28,10 +30,12 @@ class LinkedAccountResource extends Resource
                 Forms\Components\Section::make('Basic Information')
                     ->schema([
                         Forms\Components\Select::make('user_id')
-                            ->relationship('user', 'display_name')
+                            ->label('User')
+                            ->options(User::all()->pluck('display_name', 'id'))
                             ->required(),
                         Forms\Components\Select::make('connector_id')
-                            ->relationship('connector', 'name')
+                            ->label('Connector')
+                            ->options(Connector::where('is_active', true)->pluck('name', 'id'))
                             ->required(),
                         Forms\Components\Select::make('account_type')
                             ->options([
@@ -46,10 +50,16 @@ class LinkedAccountResource extends Resource
                         Forms\Components\TextInput::make('external_id')
                             ->maxLength(255),
                         Forms\Components\TextInput::make('external_username')
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->required(),
                         Forms\Components\TextInput::make('external_email')
                             ->email()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('domain')
+                            ->label('Domain')
+                            ->maxLength(255)
+                            ->placeholder('example.com')
+                            ->helperText('Domain for cPanel email/FTP accounts'),
                         Forms\Components\TextInput::make('external_role')
                             ->maxLength(255),
                     ]),

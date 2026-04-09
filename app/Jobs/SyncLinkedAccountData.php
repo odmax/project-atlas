@@ -62,9 +62,8 @@ class SyncLinkedAccountData implements ShouldQueue
                 'last_sync_status' => 'failed',
                 'provisioning_status' => 'failed',
             ]);
-
-            throw $e;
         }
+    }
     }
 
     protected function handleCreate($client): void
