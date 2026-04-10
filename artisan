@@ -5,23 +5,6 @@ use Symfony\Component\Console\Input\ArgvInput;
 
 define('LARAVEL_START', microtime(true));
 
-// Register OwenIt autoloader first
-spl_autoload_register(function ($class) {
-    $prefix = 'OwenIt\\Auditing\\';
-    $len = strlen($prefix);
-    
-    if (strncmp($class, $prefix, $len) !== 0) {
-        return;
-    }
-    
-    $relativeClass = substr($class, $len);
-    $file = __DIR__ . '/vendor/owen-it/laravel-auditing/src/' . str_replace('\\', '/', $relativeClass) . '.php';
-    
-    if (file_exists($file)) {
-        require $file;
-    }
-});
-
 // Register the Composer autoloader...
 require __DIR__.'/vendor/autoload.php';
 
