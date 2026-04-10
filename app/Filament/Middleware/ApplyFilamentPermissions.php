@@ -11,6 +11,13 @@ class ApplyFilamentPermissions
 {
     public function handle(Request $request, Closure $next): Response
     {
+        $user = $request->user();
+        
+        // Allow super-admin users to bypass permission checks
+        if ($user && $user->hasRole('super-admin')) {
+            return $next($request);
+        }
+        
         $panel = Filament::getCurrentPanel();
         
         if (!$panel) {
