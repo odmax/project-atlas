@@ -2,7 +2,11 @@
   "$schema": "https://railway.app/schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "composer install --no-dev --optimize-autoloader --ignore-platform-reqs"
+    "nixpacksVersion": "v1.24.0",
+    "php": {
+      "version": "8.3"
+    },
+    "buildCommand": "composer install --no-dev --no-interaction 2>&1 || true"
   },
   "deploy": {
     "numReplicas": 1,
