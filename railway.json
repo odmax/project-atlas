@@ -1,7 +1,8 @@
 {
   "$schema": "https://railway.app/schema.json",
   "build": {
-    "builder": "NIXPACKS"
+    "builder": "NIXPACKS",
+    "buildCommand": "mkdir -p bootstrap/cache storage/logs storage/framework/cache/sessions storage/framework/views storage/framework/cache/data && php artisan config:cache && php artisan route:cache && php artisan view:cache"
   },
   "deploy": {
     "numReplicas": 1,
