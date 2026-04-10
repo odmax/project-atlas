@@ -48,7 +48,7 @@ class AdminPanelProvider extends PanelProvider
                 ],
             ])
             ->brandName('Atlas')
-            ->brandLogo(asset('dashboard-logo.png'))
+            ->brandLogo(asset('Dashboard-Logo.png'))
             ->brandLogoHeight('60px')
             ->authGuard('web')
             ->authMiddleware([
