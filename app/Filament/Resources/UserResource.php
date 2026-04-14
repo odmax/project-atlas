@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Models\ServiceTemplate;
+use App\Models\LinkedAccount;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
 
 class UserResource extends Resource
 {
@@ -25,55 +28,79 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('uuid')
-                    ->disabled(),
-                Forms\Components\TextInput::make('first_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('middle_name')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('last_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('display_name')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('employee_code')
-                    ->unique(ignorable: fn ($record) => $record)
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('primary_email')
-                    ->email()
-                    ->required()
-                    ->unique(ignorable: fn ($record) => $record)
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('department')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('job_title')
-                    ->maxLength(255),
-                Forms\Components\Select::make('employment_status')
-                    ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                        'suspended' => 'Suspended',
-                        'terminated' => 'Terminated',
+                Forms\Components\Section::make('Service Template')
+                    ->description('Optionally select a service template to provision services for this user')
+                    ->schema([
+                        Forms\Components\Select::make('service_template_id')
+                            ->label('Service Template')
+                            ->options(ServiceTemplate::active()->pluck('name', 'id'))
+                            ->nullable()
+                            ->helperText('Select a template to provision services during onboarding'),
                     ])
-                    ->required(),
-                Forms\Components\Select::make('lifecycle_status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'onboarding' => 'Onboarding',
-                        'active' => 'Active',
-                        'offboarding' => 'Offboarding',
-                        'archived' => 'Archived',
+                    ->collapsible(),
+                Forms\Components\Section::make('Personal Information')
+                    ->schema([
+                        Forms\Components\TextInput::make('uuid')
+                            ->disabled(),
+                        Forms\Components\TextInput::make('first_name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('middle_name')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('last_name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('display_name')
+                            ->maxLength(255),
                     ])
-                    ->required(),
-                Forms\Components\Textarea::make('notes'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
+                    ->columns(2),
+                Forms\Components\Section::make('Employment')
+                    ->schema([
+                        Forms\Components\TextInput::make('employee_code')
+                            ->unique(ignorable: fn ($record) => $record)
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('primary_email')
+                            ->email()
+                            ->required()
+                            ->unique(ignorable: fn ($record) => $record)
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('phone')
+                            ->tel()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('department')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('job_title')
+                            ->maxLength(255),
+                        Forms\Components\Select::make('employment_status')
+                            ->options([
+                                'active' => 'Active',
+                                'inactive' => 'Inactive',
+                                'suspended' => 'Suspended',
+                                'terminated' => 'Terminated',
+                            ])
+                            ->required(),
+                        Forms\Components\Select::make('lifecycle_status')
+                            ->options([
+                                'pending' => 'Pending',
+                                'onboarding' => 'Onboarding',
+                                'active' => 'Active',
+                                'offboarding' => 'Offboarding',
+                                'archived' => 'Archived',
+                            ])
+                            ->required(),
+                    ])
+                    ->columns(2),
+                Forms\Components\Section::make('Notes')
+                    ->schema([
+                        Forms\Components\Textarea::make('notes'),
+                    ]),
+                Forms\Components\Section::make('Authentication')
+                    ->schema([
+                        Forms\Components\TextInput::make('password')
+                            ->password()
+                            ->required()
+                            ->maxLength(255),
+                    ]),
             ]);
     }
 
