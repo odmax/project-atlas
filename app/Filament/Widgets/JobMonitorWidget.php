@@ -11,8 +11,29 @@ class JobMonitorWidget extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
-        $service = app(SyncJobService::class);
-        $stats = $service->getJobStats();
+        try {
+            $service = app(SyncJobService::class);
+            $stats = $service->getJobStats();
+        } catch (\Exception $e) {
+            return [
+                Stat::make('Failed Jobs', 0)
+                    ->description('Jobs that need attention')
+                    ->descriptionIcon('heroicon-o-x-circle')
+                    ->color('danger'),
+                Stat::make('Running', 0)
+                    ->description('Currently processing')
+                    ->descriptionIcon('heroicon-o-play')
+                    ->color('info'),
+                Stat::make('Queued for Retry', 0)
+                    ->description('Ready to retry')
+                    ->descriptionIcon('heroicon-o-arrow-path')
+                    ->color('warning'),
+                Stat::make('Completed', 0)
+                    ->description('Successfully finished')
+                    ->descriptionIcon('heroicon-o-check-circle')
+                    ->color('success'),
+            ];
+        }
 
         return [
             Stat::make('Failed Jobs', $stats['failed'])
