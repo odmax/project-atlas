@@ -7,6 +7,6 @@
   "deploy": {
     "numReplicas": 1,
     "restartPolicyType": "NEVER",
-    "startCommand": "bash -c 'php -v && php artisan serve --host=0.0.0.0 --port=8080'"
+    "startCommand": "php artisan serve --host=0.0.0.0 --port=$PORT"
   }
 }
