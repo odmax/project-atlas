@@ -64,7 +64,6 @@ class SyncLinkedAccountData implements ShouldQueue
             ]);
         }
     }
-    }
 
     protected function handleCreate($client): void
     {
