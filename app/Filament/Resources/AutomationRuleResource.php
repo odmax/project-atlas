@@ -99,6 +99,7 @@ class AutomationRuleResource extends Resource
     {
         return [
             'index' => Pages\ListAutomationRules::route('/'),
+            'create' => Pages\CreateAutomationRule::route('/create'),
             'edit' => Pages\EditAutomationRule::route('/{record}/edit'),
         ];
     }
